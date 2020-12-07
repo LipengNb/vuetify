@@ -44,8 +44,8 @@
       <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
+      <v-btn icon @click="handleToggleDark">
+        <v-icon>{{ isNight }}</v-icon>
       </v-btn>
       <v-btn icon>
         <v-icon>mdi-dots-vertical</v-icon>
@@ -55,11 +55,11 @@
   </v-main>
 </template>
 <script>
+  import { mapState } from 'vuex'
   export default {
     data () {
       return {
         mini: false,
-        dark: false,
         drawer: false,
         selectedItem: this.$route.path,
         items: [
@@ -72,6 +72,18 @@
     computed: {
       breadcrumbs() {
         return this.$route.matched.filter(item => item && item.name)
+      },
+      ...mapState({
+        dark: state => state.settings.dark
+      }),
+      isNight() {
+        return this.dark ? 'brightness-4' : 'mdi-brightness-5'
+      }
+    },
+    methods: {
+      handleToggleDark() {
+        const bool = this.dark = !this.dark
+        this.$store.commit('settings/SET_DATA', { key: 'dark', value: bool })
       }
     }
   }

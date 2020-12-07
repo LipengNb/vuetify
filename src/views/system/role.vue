@@ -1,25 +1,21 @@
 <template>
-  <div class="container">
+  <v-container>
     <div class="table-header" app>
       <v-btn color="primary" @click="dialog = true">添加</v-btn>
     </div>
     <v-dialog v-model="dialog" width="800">
       <v-card>
-        <v-card-title class="headline grey lighten-2">
-          添加账号
-        </v-card-title>
-        <div class="container">
-          <v-form ref="form" v-model="valid" lazy-validation>
-            <v-text-field v-model="model.name" label="姓名" dense clearable :outlined="true"></v-text-field>
-            <v-text-field v-model="model.mobile" label="手机号" dense clearable :outlined="true"></v-text-field>
-            <v-text-field v-model="model.mobile" label="手机号" dense clearable :outlined="true"></v-text-field>
-          </v-form>
-        </div>
+        <v-card-title class="headline grey lighten-2"> 添加账号</v-card-title>
+        <v-form ref="form" v-model="valid" lazy-validation class="pa-6">
+          <v-text-field v-model="model.name" label="姓名" dense required clearable :outlined="true"></v-text-field>
+          <v-text-field v-model="model.account" label="账号" dense required clearable :outlined="true"></v-text-field>
+          <v-text-field v-model="model.mobile" label="手机号" dense required clearable :outlined="true"></v-text-field>
+        </v-form>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="default" @click="dialog = false">取消</v-btn>
-          <v-btn color="primary" >提交</v-btn>
+          <v-btn color="primary" @click="validate" >提交</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -27,15 +23,17 @@
       <template v-slot:default>
         <thead>
           <tr>
-            <th class="text-left">姓名</th>
-            <th class="text-left">手机号</th>
+            <th>姓名</th>
+            <th>管理员账号</th>
+            <th>手机号</th>
             <th>角色</th>
             <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in desserts" :key="item.name">
+          <tr v-for="item in desserts" :key="item.mobile">
             <td>{{ item.name }}</td>
+            <td>{{ item.account }}</td>
             <td>{{ item.mobile }}</td>
             <td>{{ item.role }}</td>
             <td>
@@ -48,21 +46,32 @@
         </tbody>
       </template>
     </v-simple-table>
-  </div>
+  </v-container>
 </template>
 <script>
 export default {
   data() {
     return {
       dialog: false,
+      valid: true,
       model: {
         name: '',
         mobile: '',
         role: ''
       },
       desserts: [
-        { name: '张三', mobile: 1254878, role: '超管' }
+        { name: '张三', account: 'zhangsan', mobile: 12548781, role: '超管' },
+        { name: '张三', account: 'zhangsan', mobile: 12548782, role: '超管' },
+        { name: '张三', account: 'zhangsan', mobile: 12548783, role: '超管' },
+        { name: '张三', account: 'zhangsan', mobile: 12548784, role: '超管' },
+        { name: '张三', account: 'zhangsan', mobile: 12548785, role: '超管' }
       ]
+    }
+  },
+  methods: {
+    validate() {
+      console.log(this.model)
+      console.log(this.$refs.form.validate())
     }
   }
 }
