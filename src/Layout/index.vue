@@ -18,25 +18,29 @@
             </v-list-item-content>
           </template>
          <v-list dense>
-          <v-list-item>
-            
-          </v-list-item>
-          <!-- <v-list-item v-for="item in items" :key="item.title" link>
+          <v-list-item v-for="item in items" :key="item.title" link :to="item.path">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item-content>
-          </v-list-item> -->
+          </v-list-item>
         </v-list>
       </v-list-group>
     </v-navigation-drawer>
     <!-- header -->
     <v-toolbar height="56" :dark="dark">
       <v-app-bar-nav-icon @click.stop="mini = !mini"></v-app-bar-nav-icon>
-      <v-toolbar-title>Title</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <!-- bread -->
+      <v-breadcrumbs customDivider divider="/" :items="breadcrumbs">
+        <template v-slot:item="{ item }">
+          <v-breadcrumbs-item :disabled="item.disabled">
+            {{ item.name }}
+          </v-breadcrumbs-item>
+        </template>
+      </v-breadcrumbs>
+      <v-spacer />
       <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
@@ -47,6 +51,7 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </v-toolbar>
+    <router-view />
   </v-main>
 </template>
 <script>
@@ -56,12 +61,17 @@
         mini: false,
         dark: false,
         drawer: false,
-        selectedItem: 0,
+        selectedItem: this.$route.path,
         items: [
-          { title: '菜单管理', icon: 'mdi-folder' },
-          { title: '用户管理', icon: 'mdi-account-multiple' },
-          { title: '角色管理', icon: 'mdi-star' }
+          { title: '角色管理', path: '/role', icon: 'mdi-star' },
+          { title: '用户管理', path: '/account', icon: 'mdi-account-multiple' },
+          { title: '菜单管理', path: '/menu', icon: 'mdi-folder' }
         ]
+      }
+    },
+    computed: {
+      breadcrumbs() {
+        return this.$route.matched.filter(item => item && item.name)
       }
     }
   }

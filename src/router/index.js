@@ -8,6 +8,11 @@ const routes = [
   {
     path: '/',
     name: 'Layout',
+    component: Layout
+  },
+  {
+    path: '/system',
+    name: '系统设置',
     component: Layout,
     children: [
       {
