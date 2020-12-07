@@ -60,6 +60,7 @@
     data () {
       return {
         mini: false,
+        toggle: false,
         drawer: false,
         selectedItem: this.$route.path,
         items: [
@@ -77,12 +78,12 @@
         dark: state => state.settings.dark
       }),
       isNight() {
-        return this.dark ? 'brightness-4' : 'mdi-brightness-5'
+        return this.dark ? 'mdi-brightness-1' : 'mdi-brightness-2'
       }
     },
     methods: {
       handleToggleDark() {
-        const bool = this.dark = !this.dark
+        const bool = this.toggle = !this.toggle
         this.$store.commit('settings/SET_DATA', { key: 'dark', value: bool })
       }
     }

@@ -19,7 +19,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-simple-table>
+    <v-simple-table :dark="$store.state.settings.dark">
       <template v-slot:default>
         <thead>
           <tr>
