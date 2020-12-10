@@ -7,19 +7,16 @@
       <template v-slot:default>
         <thead>
           <tr>
-            <th>姓名</th>
-            <th>管理员账号</th>
-            <th>手机号</th>
-            <th>角色</th>
-            <th>操作</th>
+            <th>角色名称</th>
+            <th>菜单栏</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in desserts" :key="item.mobile">
             <td>{{ item.name }}</td>
-            <td>{{ item.account }}</td>
-            <td>{{ item.mobile }}</td>
-            <td>{{ item.role }}</td>
+            <td>
+              空着
+            </td>
             <td>
               <v-btn-toggle>
                 <v-btn color="primary" small @click="handleEdit(item)">编辑</v-btn>
@@ -34,9 +31,16 @@
       <v-card>
         <v-card-title class="headline grey lighten-2"> 添加账号</v-card-title>
         <v-form ref="form" v-model="valid" lazy-validation class="pa-6">
-          <v-text-field v-model="model.name" label="姓名" :rules="rules.name" dense clearable outlined />
-          <v-text-field v-model="model.account" label="账号" :rules="rules.account" dense clearable outlined />
-          <v-text-field v-model="model.mobile" label="手机号" :rules="rules.mobile" dense clearable outlined />
+          <v-text-field v-model="model.name" label="角色名称" :rules="rules.name" dense clearable outlined />
+          <v-treeview
+            v-model="selection"
+            :items="items"
+            :selection-type="selectionType"
+            open-all
+            hoverable
+            selectable
+            activatable
+            return-object />
         </v-form>
         <v-divider></v-divider>
         <v-card-actions>
@@ -52,30 +56,42 @@
 export default {
   data() {
     return {
-      isShowDialog: false,
-      valid: true,
-      model: {
-        name: '',
-        mobile: '',
-        role: ''
-      },
-      rules: {
-        name: [
-          v => !!v || 'Name is required'
-        ],
-        account: [
-          v => !!v || 'Account is required'
-        ],
-        mobile: [
-          v => !!v || 'Mobile is required'
-        ]
-      },
       desserts: [
         { name: '张三', account: 'zhangsan', mobile: 12548781, role: '超管' },
         { name: '张三', account: 'zhangsan', mobile: 12548782, role: '超管' },
         { name: '张三', account: 'zhangsan', mobile: 12548783, role: '超管' },
         { name: '张三', account: 'zhangsan', mobile: 12548784, role: '超管' },
         { name: '张三', account: 'zhangsan', mobile: 12548785, role: '超管' }
+      ],
+      // 表单提交
+      isShowDialog: false,
+      valid: true,
+      model: {
+        name: '',
+        menus: []
+      },
+      rules: {
+        name: [
+          v => !!v || 'Name is required'
+        ]
+      },
+      selectionType: 'leaf',
+      selection: [],
+      items: [
+        {
+          id: 1,
+          name: '客户管理',
+          children: [
+            { id: 2, name: '客户列表' }
+          ],
+        },
+        {
+          id: 3,
+          name: '客户管理',
+          children: [
+            { id: 4, name: '客户列表' }
+          ],
+        }
       ]
     }
   },
@@ -103,9 +119,11 @@ export default {
 
     },
     // 提交
-    validate() {
-      console.log(this.model)
-      console.log(this.$refs.form.validate())
+    async validate() {
+      if (this.$refs.form.validate()) {
+        const res = this.$http.post('/role', this.model)
+        console.log(res)
+      }
     }
   }
 }
