@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Layout',
+    name: '首页',
     component: Layout
   },
   {
