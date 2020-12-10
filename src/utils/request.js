@@ -5,7 +5,7 @@ const instance = axios.create({
 	timeout: 30000
 })
 // 设置post请求数据类型
-instance.defaults.headers.post['content-type'] = 'application/json;charset=UTF-8'
+// instance.defaults.headers.post['content-type'] = 'application/json;charset=UTF-8'
 
 // 请求拦截
 instance.interceptors.request.use(option => {
@@ -16,10 +16,19 @@ instance.interceptors.request.use(option => {
 
 // 响应拦截
 instance.interceptors.response.use(option => {
-	// 响应成功
-	return option
+	const { status, data } = option
+	// 状态码200 代表服务端已响应
+	if (status === 200) {
+		const { code, message } = data
+		if (code !== 200) {
+			alert(message)
+			return Promise.reject(option)
+		}
+		return Promise.resolve(option)
+	}
 }, error => {
 	// 相应失败
+	console.log('相应失败', error)
 })
 
 export default instance

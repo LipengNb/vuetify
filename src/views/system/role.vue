@@ -1,18 +1,20 @@
 <template>
   <div class="pa-6">
     <div class="table-header" app>
-      <v-btn color="primary" @click="isShowDialog = true">添加</v-btn>
+      <v-btn color="primary" @click="handleAdd">添加</v-btn>
     </div>
+    
     <v-simple-table :dark="$store.state.settings.dark">
       <template v-slot:default>
         <thead>
           <tr>
             <th>角色名称</th>
             <th>菜单栏</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in desserts" :key="item.mobile">
+          <tr v-for="item in dataList" :key="item.mobile">
             <td>{{ item.name }}</td>
             <td>
               空着
@@ -56,13 +58,7 @@
 export default {
   data() {
     return {
-      desserts: [
-        { name: '张三', account: 'zhangsan', mobile: 12548781, role: '超管' },
-        { name: '张三', account: 'zhangsan', mobile: 12548782, role: '超管' },
-        { name: '张三', account: 'zhangsan', mobile: 12548783, role: '超管' },
-        { name: '张三', account: 'zhangsan', mobile: 12548784, role: '超管' },
-        { name: '张三', account: 'zhangsan', mobile: 12548785, role: '超管' }
-      ],
+      dataList: [],
       // 表单提交
       isShowDialog: false,
       valid: true,
@@ -92,7 +88,8 @@ export default {
             { id: 4, name: '客户列表' }
           ],
         }
-      ]
+      ],
+      curd: ''
     }
   },
   watch: {
@@ -106,12 +103,20 @@ export default {
   },
   methods: {
     async getTableList() {
-      const res = await this.$http.get('/menu')
-      console.log(res)
+      const res = await this.$http.get('/role')
+      const { data } = res.data
+      this.dataList = data
+    },
+    handleAdd() {
+      delete this.model._id
+      this.curd = '/create'
+      this.isShowDialog = true
     },
     // 编辑
     handleEdit(rowData) {
       this.model = Object.assign({}, this.model, rowData)
+      this.model._id = rowData._id
+      this.curd = '/update'
       this.isShowDialog = true
     },
     // 删除
@@ -121,7 +126,7 @@ export default {
     // 提交
     async validate() {
       if (this.$refs.form.validate()) {
-        const res = this.$http.post('/role', this.model)
+        const res = await this.$http.post(`/role${this.curd}`, this.model)
         console.log(res)
       }
     }
