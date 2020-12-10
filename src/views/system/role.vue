@@ -1,12 +1,12 @@
 <template>
-  <v-container>
+  <div class="pa-4">
     <div class="table-header" app>
       <v-btn color="primary" @click="dialog = true">添加</v-btn>
     </div>
     <v-dialog v-model="dialog" width="800">
       <v-card>
         <v-card-title class="headline grey lighten-2"> 添加账号</v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation class="pa-6">
+        <v-form ref="form" v-model="valid" lazy-validation class="pa-4">
           <v-text-field v-model="model.name" label="姓名" dense required clearable :outlined="true"></v-text-field>
           <v-text-field v-model="model.account" label="账号" dense required clearable :outlined="true"></v-text-field>
           <v-text-field v-model="model.mobile" label="手机号" dense required clearable :outlined="true"></v-text-field>
@@ -46,7 +46,7 @@
         </tbody>
       </template>
     </v-simple-table>
-  </v-container>
+  </div>
 </template>
 <script>
 export default {
