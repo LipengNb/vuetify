@@ -4,8 +4,12 @@ import router from './router'
 import store from './store'
 import request from './utils/request'
 import vuetify from './plugins/vuetify'
+import alert from './plugins/alert'
+
+Vue.use(alert)
 
 Vue.prototype.$http = request
+
 Vue.config.productionTip = false
 
 new Vue({

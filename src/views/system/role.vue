@@ -1,9 +1,12 @@
 <template>
   <div class="pa-6">
-    <div class="table-header" app>
+    <div class="table-header">
       <v-btn color="primary" @click="handleAdd">添加</v-btn>
     </div>
-    
+    <v-alert
+      dense
+      type="success"
+    >好家伙</v-alert>
     <v-simple-table :dark="$store.state.settings.dark">
       <template v-slot:default>
         <thead>
@@ -99,11 +102,13 @@ export default {
     }
   },
   mounted() {
+    this.$alert('ss')
     this.getTableList()
   },
   methods: {
     async getTableList() {
       const res = await this.$http.get('/role')
+      if (!res) return 
       const { data } = res.data
       this.dataList = data
     },
