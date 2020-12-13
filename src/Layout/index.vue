@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <!-- aside -->
-    <v-navigation-drawer v-model="drawer" :dark="dark" :mini-variant.sync="mini" permanent app>
+    <v-navigation-drawer v-model="drawer" :mini-variant.sync="mini" permanent app>
       <!-- user -->
       <v-list-item class="px-2">
         <v-list-item-avatar>
@@ -30,7 +30,7 @@
       </v-list-group>
     </v-navigation-drawer>
     <!-- header -->
-    <v-toolbar height="56" :dark="dark">
+    <v-toolbar height="56">
       <v-app-bar-nav-icon @click.stop="mini = !mini"></v-app-bar-nav-icon>
       <!-- bread -->
       <v-breadcrumbs customDivider divider="/" :items="breadcrumbs">
@@ -60,7 +60,6 @@
     data () {
       return {
         mini: false,
-        toggle: false,
         drawer: false,
         selectedItem: this.$route.path,
         items: [
@@ -83,8 +82,12 @@
     },
     methods: {
       handleToggleDark() {
-        const bool = this.toggle = !this.toggle
-        this.$store.commit('settings/SET_DATA', { key: 'dark', value: bool })
+        if (this.dark) {
+          this.$store.commit('settings/SET_DARK', false)
+        } else {
+          this.$store.commit('settings/SET_DARK', true)
+        }
+        this.$vuetify.theme.dark = this.dark
       }
     }
   }

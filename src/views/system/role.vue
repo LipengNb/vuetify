@@ -1,57 +1,48 @@
 <template>
-  <div class="pa-6">
-    <div class="table-header">
+  <div class="pa-4">
+    <div class="mb-4 d-flex justify-end">
       <v-btn color="primary" @click="handleAdd">添加</v-btn>
     </div>
-    <v-alert
-      dense
-      type="success"
-    >好家伙</v-alert>
-    <v-simple-table :dark="$store.state.settings.dark">
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th>角色名称</th>
-            <th>菜单栏</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in dataList" :key="item.mobile">
-            <td>{{ item.name }}</td>
-            <td>
-              空着
-            </td>
-            <td>
-              <v-btn-toggle>
-                <v-btn color="primary" small @click="handleEdit(item)">编辑</v-btn>
-                <v-btn color="error" small @click="handleDelete(item)">删除</v-btn>
-              </v-btn-toggle>
-            </td>
-          </tr>
-        </tbody>
+    <v-data-table
+      :loading="tableLoading"
+      :disable-sort="true"
+      hide-default-footer
+      :headers="headers"
+      :items="tableList"
+      class="elevation-1"
+    >
+      <template v-slot:item.menus="{ item }">
+        <v-treeview
+            :items="item.menus"
+            activatable
+            return-object
+          />
       </template>
-    </v-simple-table>
-    <v-dialog v-model="isShowDialog" width="800">
+      <template v-slot:item.operation="{ item }">
+        <v-btn color="primary" class="mr-2" small @click="handleEdit(item)">编辑</v-btn>
+        <v-btn color="error" small @click="handleDelete(item)">删除</v-btn>
+      </template>
+    </v-data-table>
+    <v-dialog v-model="isShowDialog" width="800" :persistent="true">
       <v-card>
-        <v-card-title class="headline grey lighten-2"> 添加账号</v-card-title>
+        <v-card-title class="headline blue"> 添加账号</v-card-title>
         <v-form ref="form" v-model="valid" lazy-validation class="pa-6">
           <v-text-field v-model="model.name" label="角色名称" :rules="rules.name" dense clearable outlined />
           <v-treeview
-            v-model="selection"
+            v-model="model.menus"
             :items="items"
             :selection-type="selectionType"
             open-all
             hoverable
             selectable
             activatable
-            return-object />
+            return-object
+          />
         </v-form>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="default" @click="isShowDialog = false">取消</v-btn>
-          <v-btn color="primary" @click="validate" >提交</v-btn>
+        <v-divider />
+        <v-card-actions class="d-flex justify-end">
+          <v-btn color="default" v-show="!btnLoading" @click="isShowDialog = false">取消</v-btn>
+          <v-btn color="primary" :loading="btnLoading" @click="validate" >提交</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -61,8 +52,16 @@
 export default {
   data() {
     return {
-      dataList: [],
+      headers: [
+        { text: '角色名称',  value: 'name' },
+        { text: '菜单栏', value: 'menus' },
+        { text: '状态', value: 'status' },
+        { text: '操作', value: 'operation' }
+      ],
+      tableList: [],
+      tableLoading: false,
       // 表单提交
+      btnLoading: false,
       isShowDialog: false,
       valid: true,
       model: {
@@ -102,22 +101,26 @@ export default {
     }
   },
   mounted() {
-    this.$alert('ss')
+    // this.$alert('ss')
     this.getTableList()
   },
   methods: {
     async getTableList() {
+      this.tableLoading = true
       const res = await this.$http.get('/role')
+      this.tableLoading = false
       if (!res) return 
       const { data } = res.data
-      this.dataList = data
+      console.log(data)
+      this.tableList = data
     },
+    // 添加弹框
     handleAdd() {
       delete this.model._id
       this.curd = '/create'
       this.isShowDialog = true
     },
-    // 编辑
+    // 编辑弹框
     handleEdit(rowData) {
       this.model = Object.assign({}, this.model, rowData)
       this.model._id = rowData._id
@@ -125,14 +128,18 @@ export default {
       this.isShowDialog = true
     },
     // 删除
-    handleDelete(rowData) {
-
+    async handleDelete(rowData) {
+      await this.$http.post(`/role/delete`,{ _id: rowData._id })
+      this.getTableList()
     },
     // 提交
     async validate() {
       if (this.$refs.form.validate()) {
+        this.btnLoading = true
         const res = await this.$http.post(`/role${this.curd}`, this.model)
-        console.log(res)
+        this.btnLoading = false
+        this.isShowDialog = false
+        this.getTableList()
       }
     }
   }

@@ -1,11 +1,11 @@
+import { getItem, setItem } from '@/utils/storage'
 const state = {
-	dark: false
+	dark: getItem('dark') || false
 }
 const mutations = {
-	SET_DATA(state, { key, value}) {
-		if (key in state) {
-			state[key] = value
-		}
+	SET_DARK(state, bool) {
+		state.dark = bool
+		setItem('dark', bool)
 	}
 }
 
