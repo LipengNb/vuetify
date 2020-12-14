@@ -18,6 +18,9 @@
             return-object
           />
       </template>
+      <template v-slot:item.status="{ item }">
+        <v-chip label small outlined :color="isEnables[item.status].color">{{ isEnables[item.status].label }}</v-chip>
+      </template>
       <template v-slot:item.operation="{ item }">
         <v-btn color="primary" class="mr-2" small @click="handleEdit(item)">编辑</v-btn>
         <v-btn color="error" small @click="handleDelete(item)">删除</v-btn>
@@ -38,6 +41,7 @@
             activatable
             return-object
           />
+          <v-switch v-model="model.status" :label="isEnables[model.status].label" class="ma-0" />
         </v-form>
         <v-divider />
         <v-card-actions class="d-flex justify-end">
@@ -49,6 +53,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -66,7 +71,8 @@ export default {
       valid: true,
       model: {
         name: '',
-        menus: []
+        menus: [],
+        status: true
       },
       rules: {
         name: [
@@ -97,11 +103,16 @@ export default {
   watch: {
     // 弹框关闭 重置表单
     isShowDialog(bool) {
-      !bool && this.$refs.form.reset()
+      // !bool && this.$refs.form.reset()
     }
   },
+  computed: {
+    ...mapState({
+      isEnables: state => state.globalData.isEnable
+    })
+  },
   mounted() {
-    // this.$alert('ss')
+    console.log(this.isEnables)
     this.getTableList()
   },
   methods: {

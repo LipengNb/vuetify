@@ -13,7 +13,7 @@
       show-expand
       class="elevation-1">
       <template v-slot:item.status="{ item }">
-        <v-chip label small outlined :color="item.status ? 'green' : 'red'">{{ item.status ? '启用' : '禁用' }}</v-chip>
+        <v-chip label small outlined :color="isEnables[model.status].color">{{ isEnables[model.status].label }}</v-chip>
       </template>
       <template v-slot:item.operation="{ item }">
         <v-btn color="default" class="mr-2" small @click="handleAddChild(item)">添加子集</v-btn>
@@ -29,7 +29,7 @@
           <v-text-field v-model="model.path" label="访问地址" :rules="rules.name" dense clearable outlined />
           <v-text-field v-model="model.component" label="文件路径" :rules="rules.name" dense clearable outlined />
           <v-text-field v-model="model.sort" label="排序" :rules="rules.name" dense clearable outlined />
-          <v-switch v-model="model.status" :label="model.status ? '启用' : '禁用'" class="ma-0" />
+          <v-switch v-model="model.status" :label="isEnables[model.status].label" class="ma-0" />
         </v-form>
         <v-divider />
         <v-card-actions class="d-flex justify-end">
@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -73,9 +74,14 @@ export default {
   },
   watch: {
     // 弹框关闭 重置表单
-    isShowDialog(bool) {
-      !bool && this.$refs.form.reset()
-    }
+    // isShowDialog(bool) {
+    //   !bool && this.$refs.form.reset()
+    // }
+  },
+  computed: {
+    ...mapState({
+      isEnables: state => state.globalData.isEnable
+    })
   },
   mounted() {
     this.getTableList()
