@@ -11,6 +11,18 @@ const routes = [
     component: Layout
   },
   {
+    path: '/customer',
+    name: '客户管理',
+    component: Layout,
+    children: [
+      {
+        path: '/member',
+        name: '会员管理',
+        component: () => import ('@/views/customer/member')
+      }
+    ]
+  },
+  {
     path: '/system',
     name: '系统设置',
     component: Layout,
@@ -18,16 +30,19 @@ const routes = [
       {
         path: '/account',
         name: '账号管理',
+        icon: 'mdi-star',
         component: () => import ('@/views/system/account')
       },
       {
         path: '/role',
         name: '角色管理',
+        icon: 'mdi-account-multiple',
         component: () => import ('@/views/system/role')
       },
       {
         path: '/menu',
         name: '菜单管理',
+        icon: 'mdi-folder',
         component: () => import ('@/views/system/menu')
       }
     ]

@@ -7,11 +7,10 @@ let instance
 let timer = null
 
 const Alert = (option = {}) => {
-  
   if (Vue.prototype.$isServer) return
-  
+
   if (timer) return
-  
+
   if (typeof option === 'string') {
     option = {
       message: option
@@ -29,17 +28,14 @@ const Alert = (option = {}) => {
   instance.vm.visible = true
 
   timer = setTimeout(() => {
-    
     instance.vm.$destroy()
 
     instance.vm.$el.parentNode.removeChild(instance.vm.$el)
 
     timer = null
-
   }, instance.vm.duration)
 
   return instance.vm
-
 }
 
 export default {

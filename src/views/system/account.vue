@@ -12,7 +12,7 @@
       class="elevation-1"
     >
       <template v-slot:item.gender="{ item }">
-        <v-icon :color="item.gender === 'male' ? 'blue' : '#EC407A'" >
+        <v-icon :color="item.gender === 'male' ? 'blue' : '#EC407A'">
           {{ item.gender === 'male' ? 'mdi-face-outline' : 'mdi-face-woman-outline' }}
         </v-icon>
       </template>
@@ -22,7 +22,7 @@
       <template v-slot:item.status="{ item }">
         <v-chip label small outlined :color="item.status ? 'green' : 'red'">{{ item.status ? '启用' : '禁用' }}</v-chip>
       </template>
-       <template v-slot:item.operation="{ item }">
+      <template v-slot:item.operation="{ item }">
         <v-btn color="primary" class="mr-2" small @click="handleEdit(item)">编辑</v-btn>
         <v-btn color="error" small @click="handleDelete(item)">删除</v-btn>
       </template>
@@ -42,11 +42,19 @@
         </v-form>
         <v-divider />
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="default" v-show="!btnLoading" @click="isShowDialog = false">取消</v-btn>
-          <v-btn color="primary" :loading="btnLoading" @click="validate" >提交</v-btn>
+          <v-btn v-show="!btnLoading" color="default" @click="isShowDialog = false">取消</v-btn>
+          <v-btn color="primary" :loading="btnLoading" @click="validate">提交</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <ul>
+      <li v-for="(item, key) in obj" :key="key">
+        {{ key }}
+        <p v-for="child in item" :key="child.id">
+          【{{ child.ageRangeDesc }}/{{ child.createTime }}】
+        </p>
+      </li>
+    </ul>
   </div>
 </template>
 <script>
@@ -88,7 +96,8 @@ export default {
         { text: '操作', value: 'operation' }
       ],
       tableList: [],
-      tableLoading: false
+      tableLoading: false,
+      obj: {}
     }
   },
   watch: {
@@ -98,8 +107,94 @@ export default {
     }
   },
   mounted() {
-    this.getTableList()
-    this.getRoles()
+    // this.getTableList()
+    // this.getRoles()
+    const data = [
+      {
+        'ageRange': 0,
+        'ageRangeDesc': '出生当天',
+        'createTime': '2021-02-01 15:39:39',
+        'createUserId': '1111',
+        'desc': '乙肝疫苗',
+        'id': 0,
+        'isDeleted': 0,
+        'modifyTime': '2021-02-01 15:39:42',
+        'modifyUserId': '1111',
+        'name': '乙肝疫苗',
+        'type': 0
+      },
+      // {
+      //   'ageRange': 1,
+      //   'ageRangeDesc': '1月龄',
+      //   'createTime': '2021-02-01 15:39:39',
+      //   'createUserId': '1111',
+      //   'desc': '乙肝疫苗',
+      //   'id': 1,
+      //   'isDeleted': 0,
+      //   'modifyTime': '2021-02-01 15:39:42',
+      //   'modifyUserId': '1111',
+      //   'name': '乙肝疫苗',
+      //   'type': 0
+      // },
+      {
+        'ageRange': 1,
+        'ageRangeDesc': '1月龄',
+        'createTime': '2021-02-01 16:38:53',
+        'createUserId': '1111',
+        'desc': '卡介苗',
+        'id': 2,
+        'isDeleted': 0,
+        'modifyTime': '2021-02-01 16:38:54',
+        'modifyUserId': '1111',
+        'name': '卡介苗',
+        'type': 0
+      },
+      {
+        'ageRange': 2,
+        'ageRangeDesc': '2月龄',
+        'createTime': '2021-02-01 16:39:40',
+        'createUserId': '1111',
+        'desc': '脊髓灰质炎灭活疫苗',
+        'id': 3,
+        'isDeleted': 0,
+        'modifyTime': '2021-02-01 17:22:42',
+        'modifyUserId': '1111',
+        'name': '乙肝疫苗',
+        'type': 0
+      },
+      {
+        'ageRange': 3,
+        'ageRangeDesc': '3月龄',
+        'createTime': '2021-02-01 17:22:44',
+        'createUserId': '1111',
+        'desc': '脊髓灰质炎灭活疫苗',
+        'id': 4,
+        'isDeleted': 0,
+        'modifyTime': '2021-02-01 17:22:46',
+        'modifyUserId': '1111',
+        'name': '脊髓灰质炎灭活疫苗',
+        'type': 0
+      },
+      {
+        'ageRange': 8,
+        'ageRangeDesc': '8月龄',
+        'createTime': '2021-02-01 17:22:44',
+        'createUserId': '1111',
+        'desc': '脊髓灰质炎灭活疫苗',
+        'id': 5,
+        'isDeleted': 0,
+        'modifyTime': '2021-02-01 17:22:46',
+        'modifyUserId': '1111',
+        'name': '脊髓灰质炎灭活疫苗',
+        'type': 0
+      }
+    ]
+    const obj = {}
+    for (let i = 0; i < data.length; i++) {
+      const fits = data.filter(item => item.ageRange === data.map(item => item.ageRange)[i])
+      fits.length && (obj[fits[0].ageRangeDesc] = fits)
+    }
+    this.obj = obj
   },
   methods: {
     // 表格列表
@@ -131,7 +226,7 @@ export default {
     },
     // 删除
     async handleDelete(rowData) {
-      await this.$http.post(`/account/delete`,{ _id: rowData._id })
+      await this.$http.post(`/account/delete`, { _id: rowData._id })
       this.getTableList()
     },
     // 提交
