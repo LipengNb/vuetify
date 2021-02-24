@@ -23,8 +23,7 @@ instance.interceptors.response.use(option => {
     const { code, message } = data
     // 业务状态码 不等于200 给出提示
     if (code !== 200) {
-      alert(message)
-      return Promise.reject(option)
+      Vue.alert(message)
     }
     return Promise.resolve(option)
   }
