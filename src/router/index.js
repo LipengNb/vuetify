@@ -8,17 +8,79 @@ const routes = [
   {
     path: '/',
     name: '首页',
+    meta: { icon: 'mdi-home' },
     component: Layout
   },
   {
     path: '/customer',
     name: '客户管理',
     component: Layout,
+    meta: { icon: 'mdi-account-box' },
     children: [
       {
         path: '/member',
-        name: '会员管理',
-        component: () => import ('@/views/customer/member')
+        name: '会员列表',
+        component: () => import('@/views/customer/member')
+      },
+      {
+        path: '/details',
+        name: '会员详情',
+        hidden: true,
+        component: () => import('@/views/customer/details')
+      }
+    ]
+  },
+  // {
+  //   path: '/customer',
+  //   name: '客户管理',
+  //   component: Layout,
+  //   meta: { icon: 'mdi-account-box' },
+  //   children: [
+  //     {
+  //       path: '/member',
+  //       name: '会员管理',
+  //       component: () => import ('@/views/customer/index'),
+  //       redirect: '/list',
+  //       children: [
+  //         {
+  //           path: '/list',
+  //           name: '会员列表',
+  //           component: () => import('@/views/customer/member')
+  //         },
+  //         {
+  //           path: '/details',
+  //           name: '会员详情',
+  //           component: () => import('@/views/customer/details')
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // },
+  {
+    path: '/operation',
+    name: '运营管理',
+    component: Layout,
+    meta: { icon: 'mdi-align-vertical-bottom' },
+    children: [
+      {
+        path: '/discountLevel',
+        name: '折扣管理',
+        component: () => import ('@/views/operation/discountLevel')
+      },
+      {
+        path: '/planing',
+        name: '活动策划',
+        component: () => import ('@/views/operation/planing')
+      },
+      {
+        path: '/label',
+        name: '标签管理',
+        component: () => import ('@/views/operation/label')
+      },
+      {
+        path: '/coupon',
+        name: '优惠券管理',
+        component: () => import ('@/views/operation/coupon')
       }
     ]
   },
@@ -26,6 +88,7 @@ const routes = [
     path: '/system',
     name: '系统设置',
     component: Layout,
+    meta: { icon: 'mdi-cog-box' },
     children: [
       {
         path: '/account',

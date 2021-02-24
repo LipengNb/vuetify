@@ -11,17 +11,17 @@
       :items="tableList"
       class="elevation-1"
     >
-      <template v-slot:item.menus="{ item }">
+      <template v-slot:[`item.menus`]="{ item }">
         <v-treeview
-            :items="item.menus"
-            activatable
-            return-object
-          />
+          :items="item.menus"
+          activatable
+          return-object
+        />
       </template>
-      <template v-slot:item.status="{ item }">
+      <template v-slot:[`item.status`]="{ item }">
         <v-chip label small outlined :color="isEnables[item.status].color">{{ isEnables[item.status].label }}</v-chip>
       </template>
-      <template v-slot:item.operation="{ item }">
+      <template v-slot:[`item.operation`]="{ item }">
         <v-btn color="primary" class="mr-2" small @click="handleEdit(item)">编辑</v-btn>
         <v-btn color="error" small @click="handleDelete(item)">删除</v-btn>
       </template>
@@ -45,8 +45,8 @@
         </v-form>
         <v-divider />
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="default" v-show="!btnLoading" @click="isShowDialog = false">取消</v-btn>
-          <v-btn color="primary" :loading="btnLoading" @click="validate" >提交</v-btn>
+          <v-btn v-show="!btnLoading" color="default" @click="isShowDialog = false">取消</v-btn>
+          <v-btn color="primary" :loading="btnLoading" @click="validate">提交</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: '角色名称',  value: 'name' },
+        { text: '角色名称', value: 'name' },
         { text: '菜单栏', value: 'menus' },
         { text: '状态', value: 'status' },
         { text: '操作', value: 'operation' }
@@ -87,29 +87,29 @@ export default {
           name: '客户管理',
           children: [
             { id: 2, name: '客户列表' }
-          ],
+          ]
         },
         {
           id: 3,
           name: '客户管理',
           children: [
             { id: 4, name: '客户列表' }
-          ],
+          ]
         }
       ],
       curd: ''
-    }
-  },
-  watch: {
-    // 弹框关闭 重置表单
-    isShowDialog(bool) {
-      // !bool && this.$refs.form.reset()
     }
   },
   computed: {
     ...mapState({
       isEnables: state => state.globalData.isEnable
     })
+  },
+  watch: {
+    // 弹框关闭 重置表单
+    isShowDialog(bool) {
+      // !bool && this.$refs.form.reset()
+    }
   },
   mounted() {
     console.log(this.isEnables)
@@ -120,7 +120,7 @@ export default {
       this.tableLoading = true
       const res = await this.$http.get('/role')
       this.tableLoading = false
-      if (!res) return 
+      if (!res) return
       const { data } = res.data
       console.log(data)
       this.tableList = data
@@ -140,14 +140,14 @@ export default {
     },
     // 删除
     async handleDelete(rowData) {
-      await this.$http.post(`/role/delete`,{ _id: rowData._id })
+      await this.$http.post(`/role/delete`, { _id: rowData._id })
       this.getTableList()
     },
     // 提交
     async validate() {
       if (this.$refs.form.validate()) {
         this.btnLoading = true
-        const res = await this.$http.post(`/role${this.curd}`, this.model)
+        await this.$http.post(`/role${this.curd}`, this.model)
         this.btnLoading = false
         this.isShowDialog = false
         this.getTableList()

@@ -12,87 +12,19 @@
       <v-divider />
       <!-- menus -->
       <v-list>
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-title>Home</v-list-item-title>
-        </v-list-item>
-
-        <v-list-group
-          :value="true"
-          prepend-icon="mdi-account-circle"
-        >
+        <v-list-group v-for="item in routes" :key="item.name" :value="item.isShow" :prepend-icon="item.meta.icon">
           <template v-slot:activator>
-            <v-list-item-title>Users</v-list-item-title>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
           </template>
-
-          <v-list-group
-            :value="true"
-            no-action
-            sub-group
-          >
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title>Admin</v-list-item-title>
-              </v-list-item-content>
+          <template v-if="item.children && item.children.length">
+            <template v-for="subItem in item.children">
+              <v-list-item v-if="!subItem.hidden" :key="subItem.name" :to="subItem.path">
+                <v-list-item-title>{{ subItem.name }}</v-list-item-title>
+              </v-list-item>
             </template>
-
-            <v-list-item
-              v-for="([title, icon], i) in admins"
-              :key="i"
-              link
-            >
-              <v-list-item-title v-text="title" />
-
-              <v-list-item-icon>
-                <v-icon v-text="icon" />
-              </v-list-item-icon>
-            </v-list-item>
-          </v-list-group>
-
-          <v-list-group
-            no-action
-            sub-group
-          >
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title>Actions</v-list-item-title>
-              </v-list-item-content>
-            </template>
-
-            <v-list-item
-              v-for="([title, icon], i) in cruds"
-              :key="i"
-              link
-            >
-              <v-list-item-title v-text="title" />
-
-              <v-list-item-icon>
-                <v-icon v-text="icon" />
-              </v-list-item-icon>
-            </v-list-item>
-          </v-list-group>
+          </template>
         </v-list-group>
       </v-list>
-      <!-- <v-list-group v-model="selectedItem" prepend-icon="mdi-cog-outline">
-        <template v-slot:activator>
-          <v-list-item-content>
-            <v-list-item-title>系统设置</v-list-item-title>
-          </v-list-item-content>
-        </template>
-        <v-list dense>
-          <v-list-item v-for="item in routes[1]" :key="item.name" link :to="item.path">
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-list-group> -->
     </v-navigation-drawer>
     <!-- header -->
     <v-toolbar height="56">
@@ -144,7 +76,7 @@ export default {
   },
   mounted() {
     const { routes } = this.$router.options
-    console.log(routes)
+    this.routes = routes
   },
   methods: {
     handleToggleDark() {
