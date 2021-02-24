@@ -24,16 +24,12 @@ const Alert = (option = {}) => {
   instance.vm = instance.$mount()
   const application = document.querySelector('#app')
   application.appendChild(instance.vm.$el)
-
   instance.vm.visible = true
-
   timer = setTimeout(() => {
     instance.vm.$destroy()
-
     instance.vm.$el.parentNode.removeChild(instance.vm.$el)
-
     timer = null
-  }, instance.vm.duration)
+  }, instance.vm.duration || 1500)
 
   return instance.vm
 }
